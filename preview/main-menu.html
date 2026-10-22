@@ -1,0 +1,358 @@
+<title>SNOW Menu Preview</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Dirt&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: cinematic blocky-terrain backdrop, centered logo + glass menu, theme studio docked right (stacks below on phones). */
+:root {
+  --bg: #06070a;
+  --ink: #eceef2;
+  --ink-dim: #9aa1ad;
+  --accent: #e6e6e6;
+  --panel-a: 0.55;
+  --blur: 10px;
+  --radius: 8px;
+  --border-a: 0.16;
+  --t: 1;
+  --font-display: "Rubik Dirt", "Impact", sans-serif;
+  --font-ui: "Instrument Sans", system-ui, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  --glass: rgba(14, 16, 21, var(--panel-a));
+  --line: rgba(255, 255, 255, var(--border-a));
+  color-scheme: dark;
+}
+:root[data-hc="1"] { --panel-a: 0.88; --border-a: 0.5; --ink-dim: #c9ced6; }
+
+html, body { height: 100%; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.45 var(--font-ui);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px;
+  overflow-x: hidden;
+}
+#bg { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; display: block; }
+.app { position: relative; z-index: 1; min-height: 100%; display: grid; align-items: center; }
+.shell {
+  width: 100%; max-width: 1080px; margin: 0 auto;
+  display: grid; grid-template-columns: minmax(0, 1fr) 310px; gap: 28px; align-items: center;
+}
+.stage { display: grid; justify-items: center; gap: 22px; min-width: 0; }
+
+.glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(1.1);
+  backdrop-filter: blur(var(--blur)) saturate(1.1);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+/* Logo */
+.logo { position: relative; width: min(250px, 62vw); aspect-ratio: 1; display: grid; place-items: center; }
+.logo svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.ring { fill: none; stroke: var(--accent); stroke-width: 1.2; stroke-linecap: round; opacity: 0.85; }
+.ring-dash { fill: none; stroke: var(--ink-dim); stroke-width: 0.8; stroke-dasharray: 2 7; opacity: 0.5; transform-origin: 100px 100px; }
+.wordmark { text-align: center; position: relative; }
+.wordmark h1 {
+  margin: 0; font: 400 clamp(54px, 15vw, 84px)/1 var(--font-display);
+  letter-spacing: 0.04em; color: var(--ink);
+  text-shadow: 0 0 22px rgba(255, 255, 255, 0.12);
+}
+.wordmark p {
+  margin: 8px 0 0; font: 500 11px/1 var(--font-mono);
+  letter-spacing: 0.42em; text-indent: 0.42em; color: var(--ink-dim); text-transform: uppercase;
+}
+
+/* Menu */
+.menu { width: min(420px, 100%); padding: 14px; display: grid; gap: 8px; }
+.menu-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.btn {
+  appearance: none; border: 1px solid var(--line); background: rgba(255, 255, 255, 0.04);
+  color: var(--ink); font: 500 15px/1 var(--font-ui);
+  padding: 14px 16px; border-radius: var(--radius); cursor: pointer; text-align: left;
+  display: flex; justify-content: space-between; align-items: center; gap: 10px;
+  transition: background calc(var(--t) * 160ms), border-color calc(var(--t) * 160ms), transform calc(var(--t) * 120ms);
+}
+.btn small { font: 400 10px/1 var(--font-mono); color: var(--ink-dim); letter-spacing: 0.08em; text-transform: uppercase; }
+.btn:hover { background: rgba(255, 255, 255, 0.09); border-color: color-mix(in srgb, var(--accent) 55%, transparent); }
+.btn:active { transform: scale(0.985); }
+.btn.primary { background: var(--ink); color: #0a0b0e; font-weight: 600; font-size: 16px; padding: 16px; }
+.btn.primary small { color: #4a505a; }
+.btn.primary:hover { background: #fff; }
+.btn.quiet { background: transparent; color: var(--ink-dim); justify-content: center; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.meta { font: 400 11px/1.4 var(--font-mono); color: var(--ink-dim); text-align: center; letter-spacing: 0.04em; }
+
+/* Studio (theme settings) */
+.studio { padding: 16px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.studio h2 { margin: 0; font: 600 12px/1 var(--font-mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-dim); }
+.field { display: grid; gap: 6px; }
+.field > span, .field legend { font: 500 12px/1 var(--font-ui); color: var(--ink-dim); display: flex; justify-content: space-between; padding: 0; }
+.field output { font: 400 11px/1 var(--font-mono); color: var(--ink); }
+fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { padding: 8px 10px; font-size: 12px; border-radius: 999px; justify-content: flex-start; gap: 8px; }
+.chip i { width: 10px; height: 10px; border-radius: 50%; background: var(--c); display: block; border: 1px solid rgba(255,255,255,0.3); }
+.chip[aria-pressed="true"], .seg button[aria-checked="true"] { border-color: var(--accent); background: rgba(255, 255, 255, 0.12); }
+input[type="color"] { width: 100%; height: 34px; background: transparent; border: 1px solid var(--line); border-radius: var(--radius); padding: 2px; }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.seg button { justify-content: center; padding: 10px 6px; font-size: 13px; }
+.check { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--ink); }
+.check input { width: 16px; height: 16px; accent-color: var(--accent); margin: 0; }
+.studio-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.studio-actions .btn { padding: 10px 12px; font-size: 13px; flex: 1 1 auto; justify-content: center; }
+.note { font-size: 12px; color: var(--ink-dim); margin: 0; }
+
+/* Toast (notification preview) */
+.toasts { position: fixed; z-index: 5; right: max(16px, env(safe-area-inset-right, 0px)); bottom: max(16px, env(safe-area-inset-bottom, 0px)); display: grid; gap: 8px; width: min(320px, calc(100% - 32px)); pointer-events: none; }
+.toast { padding: 12px 14px; font-size: 13px; animation: toast-in calc(var(--t) * 220ms) ease-out both; }
+.toast b { font: 500 10px/1 var(--font-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 6px; }
+
+/* Intro sequence: background -> logo -> ring -> panels -> buttons */
+@keyframes fade { from { opacity: 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } }
+@keyframes draw { from { stroke-dashoffset: var(--len); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+.play #bg { animation: fade calc(var(--t) * 700ms) ease-out both; }
+.play .wordmark { animation: rise calc(var(--t) * 650ms) cubic-bezier(.2,.7,.2,1) calc(var(--t) * 350ms) both; }
+.play .ring { --len: 578; stroke-dasharray: 578; animation: draw calc(var(--t) * 1100ms) cubic-bezier(.4,0,.2,1) calc(var(--t) * 600ms) both; }
+.play .menu, .play .studio { animation: fade calc(var(--t) * 500ms) ease-out calc(var(--t) * 1000ms) both; }
+.play .menu .btn { animation: rise calc(var(--t) * 420ms) ease-out calc(var(--t) * (1150ms + var(--i) * 70ms)) both; }
+.ring-dash { animation: spin calc(var(--t) * 90000ms) linear infinite; }
+:root[data-t0="1"] .ring-dash { animation: none; }
+
+@media (max-width: 860px) {
+  .shell { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .studio { width: min(420px, 100%); justify-self: center; }
+}
+@media (prefers-reduced-motion: reduce) { .ring-dash { animation: none; } }
+</style>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+
+<div class="app play" id="app">
+  <div class="shell">
+    <main class="stage">
+      <div class="logo">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <circle class="ring-dash" cx="100" cy="100" r="98"/>
+          <circle class="ring" cx="100" cy="100" r="92" transform="rotate(-90 100 100)"/>
+        </svg>
+        <div class="wordmark">
+          <h1>SNOW</h1>
+          <p>OVERTHISNOW</p>
+        </div>
+      </div>
+
+      <nav class="menu glass" aria-label="Main menu">
+        <button class="btn primary" style="--i:0" data-act="Play">Play <small>Last world</small></button>
+        <div class="menu-row" style="--i:1">
+          <button class="btn" style="--i:1" data-act="Singleplayer">Singleplayer</button>
+          <button class="btn" style="--i:1" data-act="Multiplayer">Multiplayer</button>
+        </div>
+        <div class="menu-row" style="--i:2">
+          <button class="btn" style="--i:2" data-act="Settings">Settings</button>
+          <button class="btn" style="--i:2" data-act="Profiles">Profiles</button>
+        </div>
+        <div class="menu-row" style="--i:3">
+          <button class="btn" style="--i:3" data-act="SNOW Vision">SNOW Vision</button>
+          <button class="btn" style="--i:3" data-act="Session dashboard">Dashboard</button>
+        </div>
+        <button class="btn quiet" style="--i:4" data-act="Quit game">Quit game</button>
+      </nav>
+      <div class="meta">SNOW Client 0.1.0 &middot; Minecraft 26.3 &middot; Fabric &middot; design preview</div>
+    </main>
+
+    <aside class="studio glass" aria-label="Theme settings">
+      <h2>Theme</h2>
+      <fieldset class="field">
+        <legend>Accent</legend>
+        <div class="chips" id="presets">
+          <button class="btn chip" data-c="#e6e6e6" aria-pressed="true"><i style="--c:#e6e6e6"></i>Monochrome</button>
+          <button class="btn chip" data-c="#8fd3ff" aria-pressed="false"><i style="--c:#8fd3ff"></i>Arctic</button>
+          <button class="btn chip" data-c="#7dffb2" aria-pressed="false"><i style="--c:#7dffb2"></i>Aurora</button>
+        </div>
+      </fieldset>
+      <label class="field" for="accent"><span>Custom accent</span><input id="accent" type="color" value="#e6e6e6"></label>
+      <label class="check" for="rgb"><input id="rgb" type="checkbox">RGB cycle accent</label>
+
+      <label class="field" for="opacity"><span>Glass opacity <output id="o-opacity">55%</output></span><input id="opacity" type="range" min="15" max="95" value="55"></label>
+      <label class="field" for="blur"><span>Blur <output id="o-blur">10</output></span><input id="blur" type="range" min="0" max="24" value="10"></label>
+      <label class="field" for="radius"><span>Corner radius <output id="o-radius">8</output></span><input id="radius" type="range" min="0" max="16" value="8"></label>
+      <label class="field" for="border"><span>Border visibility <output id="o-border">16%</output></span><input id="border" type="range" min="0" max="60" value="16"></label>
+
+      <fieldset class="field">
+        <legend>Animation</legend>
+        <div class="seg" role="radiogroup" id="anim">
+          <button class="btn" role="radio" aria-checked="false" data-m="0">Off</button>
+          <button class="btn" role="radio" aria-checked="true" data-m="1">Balanced</button>
+          <button class="btn" role="radio" aria-checked="false" data-m="1.6">Fluid</button>
+        </div>
+      </fieldset>
+      <label class="check" for="rm"><input id="rm" type="checkbox">Reduced motion</label>
+      <label class="check" for="fx"><input id="fx" type="checkbox" checked>Background effects</label>
+      <label class="check" for="hc"><input id="hc" type="checkbox">High contrast</label>
+
+      <div class="studio-actions">
+        <button class="btn" id="replay">Replay intro</button>
+        <button class="btn" id="reset">Reset</button>
+      </div>
+      <p class="note">Menu buttons only show a notification here. In the client they open the real screens.</p>
+    </aside>
+  </div>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script>
+(function () {
+  var root = document.documentElement, app = document.getElementById("app");
+  var S = { accent: "#e6e6e6", rgb: false, opacity: 55, blur: 10, radius: 8, border: 16, mode: 1, rm: false, fx: true, hc: false };
+  var DEFAULTS = JSON.parse(JSON.stringify(S));
+  var $ = function (id) { return document.getElementById(id); };
+
+  function apply() {
+    var t = S.rm ? 0 : S.mode;
+    root.style.setProperty("--t", String(t));
+    root.setAttribute("data-t0", t === 0 ? "1" : "0");
+    if (!S.rgb) root.style.setProperty("--accent", S.accent);
+    root.style.setProperty("--panel-a", String(S.opacity / 100));
+    root.style.setProperty("--blur", S.blur + "px");
+    root.style.setProperty("--radius", S.radius + "px");
+    root.style.setProperty("--border-a", String(S.border / 100));
+    root.setAttribute("data-hc", S.hc ? "1" : "0");
+    $("o-opacity").textContent = S.opacity + "%";
+    $("o-blur").textContent = S.blur;
+    $("o-radius").textContent = S.radius;
+    $("o-border").textContent = S.border + "%";
+    Array.prototype.forEach.call(document.querySelectorAll("#presets .chip"), function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.c === S.accent));
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("#anim button"), function (b) {
+      b.setAttribute("aria-checked", String(parseFloat(b.dataset.m) === S.mode));
+    });
+    drawStatic();
+  }
+
+  function toast(msg) {
+    var d = document.createElement("div");
+    d.className = "toast glass";
+    d.innerHTML = "<b>Preview</b>";
+    d.appendChild(document.createTextNode(msg));
+    var box = $("toasts");
+    while (box.children.length >= 3) box.removeChild(box.firstChild);
+    box.appendChild(d);
+    setTimeout(function () { if (d.parentNode) d.parentNode.removeChild(d); }, 3200);
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-act]"), function (b) {
+    b.addEventListener("click", function () { toast(b.dataset.act + " would open here."); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("#presets .chip"), function (b) {
+    b.addEventListener("click", function () { S.accent = b.dataset.c; S.rgb = false; $("rgb").checked = false; $("accent").value = S.accent; apply(); });
+  });
+  $("accent").addEventListener("input", function (e) { S.accent = e.target.value; S.rgb = false; $("rgb").checked = false; apply(); });
+  $("rgb").addEventListener("change", function (e) { S.rgb = e.target.checked; if (!S.rgb) apply(); });
+  [["opacity", "opacity"], ["blur", "blur"], ["radius", "radius"], ["border", "border"]].forEach(function (p) {
+    $(p[0]).addEventListener("input", function (e) { S[p[1]] = parseInt(e.target.value, 10); apply(); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("#anim button"), function (b) {
+    b.addEventListener("click", function () { S.mode = parseFloat(b.dataset.m); apply(); });
+  });
+  $("rm").addEventListener("change", function (e) { S.rm = e.target.checked; apply(); loop(); });
+  $("fx").addEventListener("change", function (e) { S.fx = e.target.checked; apply(); loop(); });
+  $("hc").addEventListener("change", function (e) { S.hc = e.target.checked; apply(); });
+  $("replay").addEventListener("click", function () {
+    app.classList.remove("play"); void app.offsetWidth; app.classList.add("play");
+  });
+  $("reset").addEventListener("click", function () {
+    S = JSON.parse(JSON.stringify(DEFAULTS));
+    $("accent").value = S.accent; $("rgb").checked = false; $("opacity").value = S.opacity; $("blur").value = S.blur;
+    $("radius").value = S.radius; $("border").value = S.border; $("rm").checked = false; $("fx").checked = true; $("hc").checked = false;
+    apply(); loop();
+  });
+
+  /* Background: stepped (block) terrain in three parallax layers, stars, drifting snow. */
+  var cv = $("bg"), ctx = cv.getContext("2d"), W = 0, H = 0, dpr = 1;
+  var px = 0, py = 0, tx = 0, ty = 0;
+  function rng(seed) { return function () { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+  var R = rng(26301), stars = [], flakes = [], layers = [];
+  for (var i = 0; i < 160; i++) stars.push({ x: R(), y: R() * 0.62, r: R() * 1.2 + 0.3, p: R() * 6.28, s: 0.5 + R() * 1.5 });
+  for (var j = 0; j < 70; j++) flakes.push({ x: R(), y: R(), r: R() * 1.6 + 0.6, v: 0.02 + R() * 0.05, d: R() * 6.28 });
+  [{ base: 0.74, amp: 7, shade: "#0b0d12", par: 6 }, { base: 0.82, amp: 6, shade: "#07080c", par: 14 }, { base: 0.92, amp: 4, shade: "#040506", par: 26 }].forEach(function (L, li) {
+    var r = rng(900 + li), h = [], v = 0;
+    for (var k = 0; k < 400; k++) { v += Math.round((r() - 0.5) * 3); v = Math.max(-L.amp, Math.min(L.amp, v)); h.push(v); }
+    L.h = h; layers.push(L);
+  });
+
+  function size() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function frame(time, animated) {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "#05060a"); g.addColorStop(0.7, "#0c0f16"); g.addColorStop(1, "#06070a");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    var tsec = time / 1000;
+    stars.forEach(function (s) {
+      var a = 0.35 + 0.45 * (animated ? Math.sin(tsec * s.s + s.p) * 0.5 + 0.5 : 0.6);
+      ctx.fillStyle = "rgba(235,240,255," + a.toFixed(3) + ")";
+      ctx.fillRect(s.x * W - px * 2, s.y * H - py * 2, s.r, s.r);
+    });
+    var block = Math.max(10, Math.round(W / 70));
+    layers.forEach(function (L) {
+      ctx.fillStyle = L.shade;
+      var cols = Math.ceil(W / block) + 4, off = Math.round(px * L.par / block);
+      for (var c = 0; c < cols; c++) {
+        var idx = ((c - off) % L.h.length + L.h.length) % L.h.length;
+        var top = Math.round(H * L.base + L.h[idx] * block * 0.5);
+        ctx.fillRect(c * block - block * 2, top, block + 1, H - top);
+      }
+    });
+    if (animated) {
+      ctx.fillStyle = "rgba(255,255,255,0.7)";
+      flakes.forEach(function (f) {
+        var y = ((f.y + tsec * f.v) % 1) * H, x = ((f.x + Math.sin(tsec * 0.3 + f.d) * 0.02) % 1) * W;
+        ctx.globalAlpha = 0.25 + f.r * 0.2;
+        ctx.fillRect(x, y, f.r, f.r);
+      });
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  var raf = 0, last = 0;
+  function animatedNow() { return S.fx && !S.rm && S.mode > 0; }
+  function drawStatic() { if (!raf) frame(0, false); }
+  function loop() {
+    cancelAnimationFrame(raf); raf = 0;
+    if (!animatedNow()) { frame(0, false); return; }
+    var step = function (ts) {
+      if (ts - last > 24) {
+        last = ts;
+        px += (tx - px) * 0.06; py += (ty - py) * 0.06;
+        if (S.rgb) root.style.setProperty("--accent", "hsl(" + ((ts / 60) % 360).toFixed(0) + " 60% 78%)");
+        frame(ts, true);
+      }
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+  window.addEventListener("pointermove", function (e) {
+    if (e.pointerType === "touch") return;
+    tx = (e.clientX / W - 0.5) * 2; ty = (e.clientY / H - 0.5) * 2;
+  });
+  window.addEventListener("resize", function () { size(); if (!raf) frame(0, false); });
+  document.addEventListener("visibilitychange", function () { if (document.hidden) { cancelAnimationFrame(raf); raf = 0; } else loop(); });
+
+  size(); apply(); loop();
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) { S.rm = true; $("rm").checked = true; apply(); loop(); }
+})();
+</script>

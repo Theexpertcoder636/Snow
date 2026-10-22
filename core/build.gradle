@@ -1,0 +1,19 @@
+plugins {
+    id 'java-library'
+}
+
+// Core has no Minecraft dependency, so it compiles on any JDK 21+.
+// This is what lets it be unit-tested without launching the game.
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Gson is used for config persistence. Minecraft ships Gson at runtime.
+    api 'com.google.code.gson:gson:2.11.0'
+}

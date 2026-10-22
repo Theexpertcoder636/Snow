@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "snowclient",
+  "version": "${version}",
+  "name": "SNOW Client",
+  "description": "SNOW / OVERTHISNOW client: glass UI, HUD, SNOW Vision. Early foundation build.",
+  "environment": "client",
+  "entrypoints": {
+    "client": ["gg.overthisnow.snow.client.SnowClient"]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
