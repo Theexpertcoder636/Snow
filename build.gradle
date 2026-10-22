@@ -1,45 +1,34 @@
-// Fabric client mod for Minecraft 26.3 (unobfuscated; Java 25).
-// 26.1+ uses the non-remapping Loom plugin id and plain `implementation`.
-// Fabric's 26.3 notes say Loom 1.17 / Gradle 9.6.0; later patch versions exist.
 plugins {
-    id 'net.fabricmc.fabric-loom' version "${loom_version}"
-    id 'java'
-}
-
-version = project.mod_version
-group = project.maven_group
-
-base {
-    archivesName = project.archives_base_name
-}
-
-repositories {
-    // Mojang libraries and Fabric artifacts are resolved by Loom.
-}
-
-dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-
-    // Pure-Java core (config, theme, animation, layout, notifications, search).
-    implementation project(':core')
-    include project(':core')
-}
-
-processResources {
-    inputs.property 'version', project.version
-    filesMatching('fabric.mod.json') {
-        expand 'version': project.version
-    }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 25
+    id 'java-library'
 }
 
 java {
-    withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    api 'com.google.code.gson:gson:2.11.0'
+}
+
+// The tests are a plain main() runner, not JUnit, so Gradle's built-in `test` task
+// would find nothing. Disable it and run the runner directly as part of `check`.
+tasks.named('test') {
+    enabled = false
+}
+
+tasks.register('runCoreTests', JavaExec) {
+    group = 'verification'
+    description = 'Runs the dependency-free core test runner.'
+    dependsOn tasks.named('testClasses')
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'gg.overthisnow.snow.core.CoreTests'
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('runCoreTests')
 }
