@@ -1,34 +1,41 @@
 plugins {
-    id 'java-library'
+    id 'net.fabricmc.fabric-loom' version "${loom_version}"
+    id 'java'
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
 }
 
 repositories {
-    mavenCentral()
+    // Mojang libraries and Fabric artifacts are resolved by Loom.
 }
 
 dependencies {
-    api 'com.google.code.gson:gson:2.11.0'
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    implementation project(':core')
+    include project(':core')
 }
 
-// The tests are a plain main() runner, not JUnit, so Gradle's built-in `test` task
-// would find nothing. Disable it and run the runner directly as part of `check`.
-tasks.named('test') {
-    enabled = false
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand 'version': project.version
+    }
 }
 
-tasks.register('runCoreTests', JavaExec) {
-    group = 'verification'
-    description = 'Runs the dependency-free core test runner.'
-    dependsOn tasks.named('testClasses')
-    classpath = sourceSets.test.runtimeClasspath
-    mainClass = 'gg.overthisnow.snow.core.CoreTests'
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 25
 }
 
-tasks.named('check') {
-    dependsOn tasks.named('runCoreTests')
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
